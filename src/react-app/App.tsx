@@ -1,5 +1,5 @@
 // src/App.tsx
-import { useState, useEffect } from "react"; // Tambah useEffect
+import { useState, useEffect } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import cloudflareLogo from "./assets/Cloudflare_Logo.svg";
@@ -9,56 +9,18 @@ import "./App.css";
 function App() {
 	const [count, setCount] = useState(0);
 	const [name, setName] = useState("unknown");
-	const [user, setUser] = useState(null); // Tambah state untuk user
-	const [loading, setLoading] = useState(true); // Tambah loading state
 
-	// TAMBAH: Cek session dari READTalk
+	// HANYA INI TAMBAHANNYA - cookie check
 	useEffect(() => {
 		const session = localStorage.getItem('readtalk_session');
-		
-		if (session) {
-			setUser(JSON.parse(session));
-			setLoading(false);
-		} else {
-			// Redirect ke halaman agree jika tidak ada session
+		if (!session) {
 			window.location.href = 'https://id-readtalk.pages.dev';
 		}
 	}, []);
 
-	// TAMBAH: Tampilan loading
-	if (loading) {
-		return (
-			<div style={{ 
-				display: 'flex', 
-				justifyContent: 'center', 
-				alignItems: 'center', 
-				minHeight: '100vh' 
-			}}>
-				<div>Loading...</div>
-			</div>
-		);
-	}
-
+	// TEMPLATE ASLI - PERSIS SAMA, TIDAK BERUBAH
 	return (
 		<>
-			{/* TAMBAH: User info card (opsional) */}
-			{user && (
-				<div style={{
-					position: 'fixed',
-					top: '10px',
-					right: '10px',
-					backgroundColor: '#f0f0f0',
-					padding: '8px 16px',
-					borderRadius: '20px',
-					fontSize: '14px',
-					boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-					zIndex: 1000
-				}}>
-					<span>👤 {user.userId?.substring(0, 8)}...</span>
-				</div>
-			)}
-
-			{/* KONTEN ASLI - TIDAK DIHAPUS */}
 			<div>
 				<a href="https://vite.dev" target="_blank">
 					<img src={viteLogo} className="logo" alt="Vite logo" />
@@ -105,29 +67,6 @@ function App() {
 				</p>
 			</div>
 			<p className="read-the-docs">Click on the logos to learn more</p>
-
-			{/* TAMBAH: Tombol logout kecil */}
-			<button
-				onClick={() => {
-					localStorage.removeItem('readtalk_session');
-					window.location.href = 'https://id-readtalk.pages.dev';
-				}}
-				style={{
-					position: 'fixed',
-					bottom: '10px',
-					right: '10px',
-					padding: '4px 12px',
-					fontSize: '12px',
-					backgroundColor: '#ff0000',
-					color: 'white',
-					border: 'none',
-					borderRadius: '16px',
-					cursor: 'pointer',
-					zIndex: 1000
-				}}
-			>
-				Logout
-			</button>
 		</>
 	);
 }
