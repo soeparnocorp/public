@@ -1,5 +1,5 @@
-// src/App.tsx - public.soeparnocorp
-import { useState, useEffect } from "react";
+// src/App.tsx
+import { useState, useEffect } from "react"; // Tambah useEffect
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import cloudflareLogo from "./assets/Cloudflare_Logo.svg";
@@ -9,36 +9,29 @@ import "./App.css";
 function App() {
 	const [count, setCount] = useState(0);
 	const [name, setName] = useState("unknown");
-	const [user, setUser] = useState(null);
-	const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+	const [user, setUser] = useState(null); // Untuk menyadari user
 
-	// CEK SESSION - harus ada untuk masuk
+	// SADARI user dari localStorage
 	useEffect(() => {
 		const session = localStorage.getItem('readtalk_session');
-		
 		if (session) {
 			setUser(JSON.parse(session));
-		} else {
-			// Tidak ada session, balik ke halaman agree
-			window.location.href = 'https://id-readtalk.pages.dev';
+			console.log('User sadar:', JSON.parse(session).userId);
 		}
 	}, []);
 
-	// FUNGSI LOGOUT - seamless balik ke halaman agree
+	// TOMBOL LOGOUT
 	const handleLogout = () => {
-		// Hapus session
 		localStorage.removeItem('readtalk_session');
-		
-		// Set flag untuk komunikasi ke halaman agree
-		sessionStorage.setItem('justLoggedOut', 'true');
-		
-		// Redirect balik ke halaman agree
-		window.location.href = 'https://id-readtalk.pages.dev';
+		setUser(null); // Update state
+		alert('Anda telah keluar');
+		// BISA juga redirect, TAPI TIDAK WAJIB
+		// window.location.href = 'https://id-readtalk.pages.dev';
 	};
 
 	return (
 		<>
-			{/* USER INFO - kecil di pojok, seperti status WhatsApp */}
+			{/* TOMBOL LOGOUT - muncul hanya jika user sadar */}
 			{user && (
 				<div style={{
 					position: 'fixed',
@@ -46,96 +39,36 @@ function App() {
 					right: '10px',
 					display: 'flex',
 					alignItems: 'center',
-					gap: '8px',
-					backgroundColor: 'rgba(255,255,255,0.9)',
-					padding: '6px 12px',
+					gap: '10px',
+					backgroundColor: '#f0f0f0',
+					padding: '8px 16px',
 					borderRadius: '20px',
 					boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-					zIndex: 1000,
-					fontSize: '13px'
+					zIndex: 1000
 				}}>
-					<span style={{
-						backgroundColor: '#00A884',
-						width: '8px',
-						height: '8px',
-						borderRadius: '50%',
-						display: 'inline-block'
-					}}></span>
-					<span>{user.userId?.substring(0, 8)}...</span>
+					<span style={{ color: '#00A884' }}>●</span>
+					<span style={{ fontSize: '14px' }}>
+						{user.userId?.substring(0, 10)}...
+					</span>
 					<button
-						onClick={() => setShowLogoutConfirm(true)}
+						onClick={handleLogout}
 						style={{
-							background: 'none',
+							backgroundColor: '#ff0000',
+							color: 'white',
 							border: 'none',
-							color: '#ff0000',
-							cursor: 'pointer',
+							borderRadius: '16px',
+							padding: '4px 12px',
 							fontSize: '12px',
-							padding: '2px 6px',
-							marginLeft: '4px'
+							cursor: 'pointer',
+							marginLeft: '8px'
 						}}
 					>
-						✕
+						Logout
 					</button>
 				</div>
 			)}
 
-			{/* MODAL KONFIRMASI LOGOUT - seperti WhatsApp */}
-			{showLogoutConfirm && (
-				<div style={{
-					position: 'fixed',
-					top: 0,
-					left: 0,
-					right: 0,
-					bottom: 0,
-					backgroundColor: 'rgba(0,0,0,0.5)',
-					display: 'flex',
-					alignItems: 'center',
-					justifyContent: 'center',
-					zIndex: 2000
-				}}>
-					<div style={{
-						backgroundColor: 'white',
-						padding: '20px',
-						borderRadius: '12px',
-						maxWidth: '300px',
-						textAlign: 'center'
-					}}>
-						<h3 style={{ margin: '0 0 10px' }}>Keluar dari READTalk?</h3>
-						<p style={{ margin: '0 0 20px', color: '#666' }}>
-							Anda akan kembali ke halaman welcome.
-						</p>
-						<div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-							<button
-								onClick={() => setShowLogoutConfirm(false)}
-								style={{
-									padding: '8px 16px',
-									border: '1px solid #ccc',
-									background: 'white',
-									borderRadius: '20px',
-									cursor: 'pointer'
-								}}
-							>
-								Batal
-							</button>
-							<button
-								onClick={handleLogout}
-								style={{
-									padding: '8px 16px',
-									background: '#ff0000',
-									color: 'white',
-									border: 'none',
-									borderRadius: '20px',
-									cursor: 'pointer'
-								}}
-							>
-								Keluar
-							</button>
-						</div>
-					</div>
-				</div>
-			)}
-
-			{/* TEMPLATE ASLI - TIDAK BERUBAH */}
+			{/* TEMPLATE ASLI - PERSIS SAMA */}
 			<div>
 				<a href="https://vite.dev" target="_blank">
 					<img src={viteLogo} className="logo" alt="Vite logo" />
@@ -156,20 +89,30 @@ function App() {
 			</div>
 			<h1>Vite + React + Hono + Cloudflare</h1>
 			<div className="card">
-				<button onClick={() => setCount((count) => count + 1)}>
+				<button
+					onClick={() => setCount((count) => count + 1)}
+					aria-label="increment"
+				>
 					count is {count}
 				</button>
-				<p>Edit <code>src/App.tsx</code> and save to test HMR</p>
+				<p>
+					Edit <code>src/App.tsx</code> and save to test HMR
+				</p>
 			</div>
 			<div className="card">
-				<button onClick={() => {
-					fetch("/api/")
-						.then((res) => res.json())
-						.then((data) => setName(data.name));
-				}}>
+				<button
+					onClick={() => {
+						fetch("/api/")
+							.then((res) => res.json() as Promise<{ name: string }>)
+							.then((data) => setName(data.name));
+					}}
+					aria-label="get name"
+				>
 					Name from API is: {name}
 				</button>
-				<p>Edit <code>worker/index.ts</code> to change the name</p>
+				<p>
+					Edit <code>worker/index.ts</code> to change the name
+				</p>
 			</div>
 			<p className="read-the-docs">Click on the logos to learn more</p>
 		</>
