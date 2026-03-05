@@ -1,0 +1,50 @@
+// wrangler.json
+{
+  "name": "readtalk",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2025-01-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS"
+  },
+  "vars": {
+    "ENVIRONMENT": "production"
+  },
+  "d1_databases": [
+    {
+      "binding": "READTALK_DB",
+      "database_name": "readtalk_db",
+      "database_id": "your-d1-database-id"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "READTALK_KV",
+      "id": "your-kv-namespace"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "READTALK_R2",
+      "bucket_name": "readtalk-r2"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "rooms",
+        "class_name": "ChatRoom"
+      },
+      {
+        "name": "limiters",
+        "class_name": "RateLimiter"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_classes": ["ChatRoom", "RateLimiter"]
+    }
+  ]
+}
