@@ -30,7 +30,7 @@
     ]
   },
   "migrations": [
-    { "tag": "v1", "new_classes": ["ChatRoom", "RateLimiter"] }
+    { "tag": "v1", "new_sqlite_classes": ["ChatRoom", "RateLimiter"] }
   ],
   "vars": {
     "GIT_REPO_KEY": "soeparnocorp/index"
