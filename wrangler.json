@@ -1,14 +1,18 @@
 {
-  "name": "readtalk",
-  "main": "src/worker/index.ts",
-  "compatibility_date": "2025-01-01",
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "account",
+  "main": "./src/worker/index.ts",
+  "compatibility_date": "2025-10-08",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "upload_source_maps": true,
   "assets": {
-    "directory": "./dist",
-    "binding": "ASSETS"
+    "directory": "./dist/client",
+    "not_found_handling": "single-page-application"
   },
-  "vars": {
-    "ENVIRONMENT": "production"
-  },
+  "kv_namespaces": [
+    { "binding": "READTALK_KV", "id": "13a468e30cc84fe58ff6297d799050f2" }
+  ],
   "d1_databases": [
     {
       "binding": "READTALK_DB",
@@ -16,34 +20,19 @@
       "database_id": "ff653b9c-4e2c-479d-8aa4-497da62de3c5"
     }
   ],
-  "kv_namespaces": [
-    {
-      "binding": "READTALK_KV",
-      "id": "13a468e30cc84fe58ff6297d799050f2"
-    }
-  ],
   "r2_buckets": [
-    {
-      "binding": "READTALK_R2",
-      "bucket_name": "readtalk-r2"
-    }
+    { "binding": "READTALK_R2", "bucket_name": "readtalk-r2" }
   ],
   "durable_objects": {
     "bindings": [
-      {
-        "name": "rooms",
-        "class_name": "ChatRoom"
-      },
-      {
-        "name": "limiters",
-        "class_name": "RateLimiter"
-      }
+      { "name": "rooms", "class_name": "ChatRoom" },
+      { "name": "limiters", "class_name": "RateLimiter" }
     ]
   },
   "migrations": [
-    {
-      "tag": "v1",
-      "new_classes": ["ChatRoom", "RateLimiter"]
-    }
-  ]
+    { "tag": "v1", "new_classes": ["ChatRoom", "RateLimiter"] }
+  ],
+  "vars": {
+    "GIT_REPO_KEY": "soeparnocorp/index"
+  }
 }
